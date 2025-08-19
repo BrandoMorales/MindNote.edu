@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: "#1E40AF", // Azul personalizado
+        brand: "#00ff73ff", // VERDE personalizado
       },
     },
   },
