@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>React Navbar Project</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindNote.edu</title>
+  <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><img src="/logo.png" alt="80" height="80"></div>
+      <ul class="nav-links">
+        <li><a href="/index.html">Inicio</a></li>
+        <li><a href="/templates/registrar.html">Registrar</a></li>
+        <li><a href="/templates/login.html">Iniciar Sesión</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Bienvenido a MindNote.edu</h1>
+      <p>Tu espacio para organizar, agendar y recordar tus notas importantes.</p>
+      <div class="hero-buttons">
+        <a href="../Proyecto/templates/registrar.html" class="btn">Registrar</a>
+        <a href="../Proyecto/templates/login.html" class="btn btn-outline">Iniciar Sesión</a>
+      </div>
+    </div>
+  </section>
+<script src="../static/js/script.js"></script>
+
+  <footer>
+    <p>&copy; 2025 MindNote.edu -ANDRES SALAS Y BRANDON MORALES</p>
+  </footer>
+</body>
 </html>
