@@ -1,8 +1,23 @@
-// =====================
-// MINDNOTE.EDU - SCRIPT
-// =====================
+document.getElementById("formRegistro").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// Guardar usuarios en LocalStorage
+  const data = {
+    nombre: document.getElementById("nombre").value,
+    apellido: document.getElementById("apellido").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value,
+  };
+
+  const res = await fetch("http://localhost:3000/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  alert(result.message);
+});
+
 function registrarUsuario(nombre, correo, password) {
   let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
