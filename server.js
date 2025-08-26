@@ -59,3 +59,65 @@ app.post("/backend/api/login.js", async (req, res) => {
 app.listen(3000, () => {
   console.log("Servidor corriendo en http://localhost:root:3006");
 });
+// ------------------ CREAR NOTA ------------------
+app.post("/api/notas", async (req, res) => {
+  try {
+    const { titulo, descripcion, fecha, hora, prioridad, usuarioId, categoriaId } = req.body;
+
+    const [result] = await db.query(
+      "INSERT INTO tarea (titulo, descripcion, fechaLimite, hora, estado, prioridad, Usuario_id, categoria_id, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+      [titulo, descripcion, fecha, hora, "Pendiente", prioridad, usuarioId, categoriaId]
+    );
+
+    res.json({ success: true, message: "Nota creada", notaId: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error al crear nota" });
+  }
+});
+
+// ------------------ LISTAR NOTAS DE UN USUARIO ------------------
+app.get("/api/notas/:usuarioId", async (req, res) => {
+  try {
+    const { usuarioId } = req.params;
+
+    const [rows] = await db.query(
+      "SELECT t.ID_tarea as ID_nota, t.titulo, t.descripcion, t.fechaLimite, t.hora, t.estado, t.prioridad, c.nombre as categoria FROM tarea t JOIN categoria c ON t.categoria_id = c.ID_categoria WHERE t.Usuario_id = ?",
+      [usuarioId]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error al obtener notas" });
+  }
+});
+
+// ------------------ ACTUALIZAR NOTA ------------------
+app.put("/api/notas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    await db.query("UPDATE tarea SET estado = ? WHERE ID_tarea = ?", [estado, id]);
+
+    res.json({ success: true, message: "Nota actualizada" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error al actualizar nota" });
+  }
+});
+
+// ------------------ ELIMINAR NOTA ------------------
+app.delete("/api/notas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await db.query("DELETE FROM tarea WHERE ID_tarea = ?", [id]);
+
+    res.json({ success: true, message: "Nota eliminada" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error al eliminar nota" });
+  }
+});

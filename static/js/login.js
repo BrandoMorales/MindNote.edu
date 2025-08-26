@@ -78,3 +78,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+localStorage.setItem("usuarioId", result.user.ID_usuario);

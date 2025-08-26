@@ -1,0 +1,181 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 10%;
+  background-color: #0077ff;
+  color: white;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: #0066ff;
+}
+
+/* ===== BODY ===== */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f9;
+  color: #2c3e50;
+  padding-bottom: 50px;
+}
+
+h2, h3 {
+  text-align: center;
+  margin: 20px 0;
+  color: #34495e;
+}
+
+/* ===== FORM ===== */
+form {
+  max-width: 600px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+form input,
+form textarea,
+form select,
+form button {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border 0.3s;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  border: 1px solid #3498db;
+}
+
+form button {
+  background: #3498db;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+form button:hover {
+  background: #2980b9;
+}
+
+/* ===== LISTA DE NOTAS ===== */
+#listaNotas {
+  max-width: 700px;
+  margin: 20px auto;
+  list-style: none;
+  padding: 0;
+}
+
+#listaNotas li {
+  background: #ffffff;
+  margin-bottom: 15px;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  border-left: 6px solid #8e44ad;
+  transition: transform 0.2s;
+}
+
+#listaNotas li:hover {
+  transform: translateY(-3px);
+}
+
+#listaNotas li strong {
+  font-size: 17px;
+  display: block;
+  margin-bottom: 6px;
+  color: #2c3e50;
+}
+
+#listaNotas li small {
+  color: #7f8c8d;
+  font-size: 13px;
+}
+
+/* Colores por prioridad */
+#listaNotas li[data-prioridad="Alta"] {
+  border-left-color: #e74c3c;
+}
+#listaNotas li[data-prioridad="Media"] {
+  border-left-color: #f39c12;
+}
+#listaNotas li[data-prioridad="Baja"] {
+  border-left-color: #27ae60;
+}
+
+/* Botones dentro de la nota */
+#listaNotas li button {
+  display: inline-block;
+  margin-top: 10px;
+  margin-right: 5px;
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+#listaNotas li button:first-of-type {
+  background: #27ae60;
+}
+#listaNotas li button:first-of-type:hover {
+  background: #1e8449;
+}
+
+#listaNotas li button:last-of-type {
+  background: #e74c3c;
+}
+#listaNotas li button:last-of-type:hover {
+  background: #c0392b;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 15px;
+  background: #0178ee;
+  color: white;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
