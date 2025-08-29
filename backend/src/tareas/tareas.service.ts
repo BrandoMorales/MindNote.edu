@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTareaDto } from './dto/create-tarea.dto';
-import { UpdateTareaDto } from './dto/update-tarea.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateTareaDto } from './dto/create-tarea.dto.js';
+import { UpdateTareaDto } from './dto/update-tarea.dto.js';
+import { PrismaService } from 'backend/src/prisma/prisma.service.js';
 
 @Injectable()
 export class TareasService {

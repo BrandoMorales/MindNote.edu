@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TareasService } from './tareas.service';
-import { CreateTareaDto } from './dto/create-tarea.dto';
-import { UpdateTareaDto } from './dto/update-tarea.dto';
+import { TareasService } from './tareas.service.js';
+import { CreateTareaDto } from './dto/create-tarea.dto.js';
+import { UpdateTareaDto } from './dto/update-tarea.dto.js';
 
 @Controller('tareas')
 export class TareasController {
