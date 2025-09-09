@@ -1,0 +1,19 @@
+.home {
+  text-align: center;
+  padding: 80px 20px;
+ background: linear-gradient(to right, #ffffff, #00c3ff);
+  min-height: calc(100vh - 70px);
+}
+
+.home h1 {
+  font-size: 3rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.home p {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
