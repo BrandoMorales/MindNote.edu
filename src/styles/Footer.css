@@ -1,0 +1,43 @@
+/* ==== FOOTER ==== */
+footer {
+  background: linear-gradient(135deg, #000000, #2575fc); /* Fondo degradado */
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  font-family: 'Poppins', sans-serif;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Links del footer */
+footer nav {
+  margin-top: 0.5rem;
+}
+
+footer nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+footer nav a:hover {
+  color: #ffdf5d; /* Amarillo dorado al hover */
+}
+
+/* Responsive: en pantallas grandes separa el contenido */
+@media (min-width: 768px) {
+  footer .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+}

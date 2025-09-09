@@ -1,126 +1,127 @@
-/* Fondo */
-.notas-page {
-  background: linear-gradient(to right, #ffffff, #00c3ff);
-  min-height: 100vh;
+.notas-main {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  gap: 30px;
+  padding: 20px;
+  align-items: flex-start;
 }
 
-/* Contenedor */
+.calendar-section {
+  flex: 1;
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 .notas-container {
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  width: 400px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  flex: 2;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Título */
-.notas-title {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #000000;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-/* Inputs */
 .notas-inputs {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 10px;
 }
 
 .notas-input,
 .notas-input-date {
-  padding: 0.5rem;
-  border: 2px solid #003cff;
-  border-radius: 0.5rem;
-  outline: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.notas-input:focus,
-.notas-input-date:focus {
-  border-color: #c4b9d8;
-}
-
-/* Botón */
 .notas-add-btn {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: #049bff;
-  color: white;
+  padding: 10px;
   border: none;
-  border-radius: 0.5rem;
+  background: #4cafef;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
 }
 
 .notas-add-btn:hover {
-  background: #0a58cc;
+  background: #3791d3;
 }
 
-/* Lista */
 .notas-list {
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
-}
-
-.notas-empty {
-  text-align: center;
-  color: #6b7280;
 }
 
 .notas-item {
-  background: #f3e8ff;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 .notas-item.done {
-  background: #bbf7d0;
   text-decoration: line-through;
+  background: #d4ffd4;
 }
 
-/* Acciones */
-.notas-actions {
-  display: flex;
-  gap: 0.5rem;
+.notas-actions button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .notas-btn-check {
-  color: #16a34a;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  background: none;
+  background: #4caf50;
+  color: white;
 }
 
-.notas-btn-check:hover {
-  color: #15803d;
+.notas-btn-edit {
+  background: #ff9800;
+  color: white;
 }
 
 .notas-btn-delete {
-  color: #dc2626;
+  background: #f44336;
+  color: white;
+}
+.logout-btn {
+  background: #ff4b4b;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  border: none;
-  background: none;
+  transition: all 0.3s ease;
+  margin-left: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.notas-btn-delete:hover {
-  color: #b91c1c;
+.logout-btn:hover {
+  background: #e63939;
+  transform: scale(1.05);
 }
 
-small {
-  display: block;
-  font-size: 0.75rem;
-  color: #6b7280;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4cafef;
+  padding: 15px 30px;
+  border-radius: 0 0 12px 12px;
+  color: white;
+}
+
+.welcome {
+  font-size: 18px;
+  margin-right: 10px;
+  font-weight: 500;
 }

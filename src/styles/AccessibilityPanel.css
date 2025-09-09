@@ -1,65 +1,45 @@
 .accessibility-panel {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
-  background: #f5f5f5;
-  border-right: 2px solid #ccc;
-  padding: 20px;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  top: 80px;
+  right: 20px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 12px;
+  width: 220px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  font-family: "Poppins", sans-serif;
 }
 
-.accessibility-panel h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+.accessibility-panel h3 {
+  margin-top: 0;
   text-align: center;
 }
 
 .control {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  margin: 10px 0;
 }
 
-.control label {
-  font-weight: bold;
+input[type="range"] {
+  width: 100%;
 }
 
-.control button {
-  background: #6a0dad;
+/* 🌙 Modo oscuro */
+.dark-mode {
+  background: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .accessibility-panel {
+  background: #333;
   color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+  border: 1px solid #555;
 }
 
-.control button:hover {
-  background: #8e24aa;
-}
-
-.control input[type="checkbox"] {
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-.control select {
-  padding: 5px;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-/* Modo alto contraste */
+/* 🎨 Alto contraste */
 .high-contrast {
-  background: black !important;
-  color: yellow !important;
+  filter: contrast(1.5);
 }
 
-.high-contrast a {
-  color: cyan !important;
-}

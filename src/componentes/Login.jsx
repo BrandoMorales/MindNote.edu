@@ -1,13 +1,28 @@
 import React, { useState } from "react";
 import "../styles/login.css";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`Iniciando sesión con: ${email}`);
+
+    const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
+
+    if (
+      registeredUser &&
+      registeredUser.email === email &&
+      registeredUser.password === password
+    ) {
+      localStorage.setItem("user", JSON.stringify(registeredUser));
+      alert(`Bienvenido, ${registeredUser.nombre}`);
+      navigate("/notas");
+    } else {
+      alert("Credenciales incorrectas");
+    }
   };
 
   return (
@@ -30,6 +45,9 @@ const Login = () => {
         />
         <button type="submit">Entrar</button>
       </form>
+      <p>
+        ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
+      </p>
     </div>
   );
 };

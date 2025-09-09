@@ -1,30 +1,45 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import "../styles/Notas.css";
 
 function Notas() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [date, setDate] = useState("");
-  const [editIndex, setEditIndex] = useState(null); // 🔥 Nuevo estado para editar
+  const [editIndex, setEditIndex] = useState(null);
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const navigate = useNavigate();
 
-  // ✅ Pedir permiso para notificaciones
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-  }, []);
+  if (!user) {
+    alert("Necesitas iniciar sesión para acceder a tus notas.");
+    navigate("/Login"); // Redirige a Login
+  }
+
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+}, [user, navigate]);
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   const addTask = () => {
     if (input.trim() === "" || date === "") return;
 
     if (editIndex !== null) {
-      // 🔥 Editar nota
       const updatedTasks = [...tasks];
       updatedTasks[editIndex] = { ...updatedTasks[editIndex], text: input, time: date };
       setTasks(updatedTasks);
       setEditIndex(null);
     } else {
-      // 🔥 Nueva nota
       const newTask = { text: input, done: false, time: date };
       setTasks([...tasks, newTask]);
       scheduleNotification(newTask);
@@ -65,68 +80,72 @@ function Notas() {
     }
   };
 
+  const filteredTasks = tasks.filter(
+    (task) =>
+      new Date(task.time).toDateString() === calendarDate.toDateString()
+  );
+
   return (
     <div className="notas-page">
-      <div className="notas-container">
-        <h1 className="notas-title">📓 Agenda de Notas y Recordatorios</h1>
-
-        {/* Inputs */}
-        <div className="notas-inputs">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Escribe una nota..."
-            className="notas-input"
-          />
-          <input
-            type="datetime-local"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="notas-input-date"
-          />
-          <button onClick={addTask} className="notas-add-btn">
-            {editIndex !== null ? "✏️ Guardar" : "➕"}
+      <header className="header">
+        <h1>Mindnote</h1>
+        <div>
+          <span className="welcome">
+            👋 Bienvenido, <b>{user?.nombre}</b>
+          </span>
+          <button onClick={handleLogout} className="logout-btn">
+            Cerrar Sesión
           </button>
         </div>
+      </header>
 
-        {/* Lista */}
-        <ul className="notas-list">
-          {tasks.length === 0 && (
-            <p className="notas-empty">No tienes notas aún 📌</p>
-          )}
-          {tasks.map((task, index) => (
-            <li
-              key={index}
-              className={`notas-item ${task.done ? "done" : ""}`}
-            >
-              <div>
-                <span>{task.text}</span>
-                <small>{new Date(task.time).toLocaleString()}</small>
-              </div>
-              <div className="notas-actions">
-                <button
-                  onClick={() => toggleTask(index)}
-                  className="notas-btn-check"
-                >
-                  ✔
-                </button>
-                <button
-                  onClick={() => editTask(index)}
-                  className="notas-btn-edit"
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => deleteTask(index)}
-                  className="notas-btn-delete"
-                >
-                  ✖
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div className="notas-main">
+        {/* 🔥 Panel de calendario y agendar */}
+        <div className="calendar-section">
+          <h2>📅 Calendario</h2>
+          <Calendar value={calendarDate} onChange={setCalendarDate} />
+          <div className="notas-inputs">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Escribe una nota..."
+              className="notas-input"
+            />
+            <input
+              type="datetime-local"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="notas-input-date"
+            />
+            <button onClick={addTask} className="notas-add-btn">
+              {editIndex !== null ? "✏️ Guardar" : "➕"}
+            </button>
+          </div>
+        </div>
+
+        {/* 🔥 Lista de notas */}
+        <div className="notas-container">
+          <h2>📝 Notas del {calendarDate.toLocaleDateString()}</h2>
+          <ul className="notas-list">
+            {filteredTasks.length === 0 && (
+              <p className="notas-empty">No tienes notas para esta fecha 📌</p>
+            )}
+            {filteredTasks.map((task, index) => (
+              <li key={index} className={`notas-item ${task.done ? "done" : ""}`}>
+                <div>
+                  <span>{task.text}</span>
+                  <small>{new Date(task.time).toLocaleString()}</small>
+                </div>
+                <div className="notas-actions">
+                  <button onClick={() => toggleTask(index)} className="notas-btn-check">✔</button>
+                  <button onClick={() => editTask(index)} className="notas-btn-edit">✏️</button>
+                  <button onClick={() => deleteTask(index)} className="notas-btn-delete">✖</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
