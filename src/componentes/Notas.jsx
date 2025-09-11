@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Notas.css";
+import axios from "axios";
 
 function Notas() {
   const [tasks, setTasks] = useState([]);
@@ -31,7 +32,7 @@ function Notas() {
     navigate("/");
   };
 
-  const addTask = () => {
+   const addTask = async () => {
     if (input.trim() === "" || date === "") return;
 
     if (editIndex !== null) {
@@ -44,6 +45,12 @@ function Notas() {
       setTasks([...tasks, newTask]);
       scheduleNotification(newTask);
     }
+
+
+    //peticion a backend utilizando axios *//
+    const response = await axios.post("http://localhost:3006/tareas", tasks)
+    console.log(response.data)  
+
 
     setInput("");
     setDate("");

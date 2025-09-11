@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
+import axios from "axios";
 
 const Register = () => {
   const [nombre, setNombre] = useState("");
@@ -19,6 +20,10 @@ const Register = () => {
     alert("Registro exitoso. Ahora inicia sesión.");
     navigate("/"); // 🔥 Ir al Login
   };
+
+   //peticion a backend utilizando axios *//
+   const response =  axios.post("http://localhost:3006/tareas", nombre,apellido,email,password)
+    console.log(response.data) 
 
   return (
     <div className="login-container">

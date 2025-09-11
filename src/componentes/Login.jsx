@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/login.css";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,6 +25,10 @@ const Login = () => {
       alert("Credenciales incorrectas");
     }
   };
+
+  //peticion a backend utilizando axios *//
+   const response =  axios.get("http://localhost:3006/tareas", email)
+    console.log(response.data)  
 
   return (
     <div className="login-container">
