@@ -1,0 +1,32 @@
+.admin-container {
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.usuarios-table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: white;
+  color: black;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.usuarios-table th,
+.usuarios-table td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+}
+
+.usuarios-table th {
+  background: #007bff;
+  color: white;
+}
+
+.usuarios-table tr:nth-child(even) {
+  background: #f2f2f2;
+}

@@ -1,34 +1,66 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/login.css";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // 🚫 Evitar que un usuario logueado vuelva a entrar aquí
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      Swal.fire({
+        icon: "info",
+        title: "Ya tienes sesión activa",
+        text: `Ya has iniciado sesión como ${user.rol}.`
+      }).then(() => {
+        if (user.rol === "administrador") {
+          navigate("/admin");
+        } else {
+          navigate("/notas");
+        }
+      });
+    }
+  }, [navigate]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const registeredUser = JSON.parse(localStorage.getItem("registeredUser"));
+    const registeredUsers =
+      JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
-    if (
-      registeredUser &&
-      registeredUser.email === email &&
-      registeredUser.password === password
-    ) {
-      localStorage.setItem("user", JSON.stringify(registeredUser));
-      alert(`Bienvenido, ${registeredUser.nombre}`);
-      navigate("/notas");
+    const user = registeredUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+      // Guardar sesión activa
+      localStorage.setItem("user", JSON.stringify(user));
+
+      Swal.fire({
+        icon: "success",
+        title: `Bienvenido, ${user.nombre}`,
+        text: `Has iniciado como ${user.rol}.`,
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        if (user.rol === "administrador") {
+          navigate("/admin");
+        } else {
+          navigate("/notas");
+        }
+      });
     } else {
-      alert("Credenciales incorrectas");
+      Swal.fire({
+        icon: "error",
+        title: "Credenciales incorrectas",
+        text: "Verifica tu correo y contraseña",
+      });
     }
   };
-
-  //peticion a backend utilizando axios *//
-   const response =  axios.get("http://localhost:3006/tareas", email)
-    console.log(response.data)  
 
   return (
     <div className="login-container">

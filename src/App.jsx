@@ -7,7 +7,7 @@ import Register from "./componentes/Register"
 import Notas from "./componentes/Notas";
 import Footer from "./componentes/Footer";
 import AccessibilityPanel from "./componentes/Accessibilitypanel";
-
+import Admin from "./componentes/Admin";
 function App() {
   return (
     <Router>
@@ -17,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/notas" element={<Notas />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Admin/>}/>
       </Routes>
       <Footer />
       {/* 🔥 Panel de accesibilidad GLOBAL */}
