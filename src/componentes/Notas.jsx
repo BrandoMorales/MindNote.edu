@@ -9,7 +9,7 @@ function Notas() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // 📌 Clave única de notas por usuario (ejemplo: tasks_usuario@gmail.com)
+  // 📌 Clave única de notas por usuario
   const storageKey = user ? `tasks_${user.email}` : "tasks";
 
   const [tasks, setTasks] = useState(
@@ -35,14 +35,72 @@ function Notas() {
     }
   }, [user, navigate]);
 
-  // 💾 Guardar notas en localStorage cada vez que cambien
+  // 💾 Guardar notas en localStorage
   useEffect(() => {
     if (user) {
       localStorage.setItem(storageKey, JSON.stringify(tasks));
     }
   }, [tasks, storageKey, user]);
 
-  // 🚪 Cerrar sesión con confirmación
+  // 🚨 Revisar notas atrasadas (solo usuario logueado)
+  useEffect(() => {
+    if (!user) return;
+
+    const checkOverdue = () => {
+      const ahora = new Date();
+
+      tasks.forEach((task) => {
+        const fechaTask = new Date(task.time);
+
+        if (fechaTask < ahora && !task.done) {
+          Swal.fire({
+            icon: "warning",
+            title: "Nota atrasada",
+            text: `La nota "${task.text}" no se ha cumplido (era para ${fechaTask.toLocaleString()})`,
+            timer: 4000,
+            showConfirmButton: false
+          });
+        }
+      });
+    };
+
+    checkOverdue();
+    const interval = setInterval(checkOverdue, 60000);
+
+    return () => clearInterval(interval);
+  }, [tasks, user]);
+
+  // ⏰ Recordatorio exacto (solo usuario logueado)
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      const ahora = new Date();
+
+      tasks.forEach((task) => {
+        const fechaTask = new Date(task.time);
+
+        if (
+          !task.done &&
+          fechaTask.getMinutes() === ahora.getMinutes() &&
+          fechaTask.getHours() === ahora.getHours() &&
+          fechaTask.toDateString() === ahora.toDateString()
+        ) {
+          Swal.fire({
+            icon: "info",
+            title: "Recordatorio",
+            text: `Es la hora de tu nota: "${task.text}"`,
+            timer: 5000,
+            showConfirmButton: false
+          });
+        }
+      });
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [tasks, user]);
+
+  // 🚪 Cerrar sesión
   const handleLogout = () => {
     Swal.fire({
       title: "¿Seguro que deseas cerrar sesión?",
@@ -79,7 +137,6 @@ function Notas() {
       return;
     }
 
-    // 🚫 Validar notas duplicadas
     const exists = tasks.some((task, i) => task.time === date && i !== editIndex);
     if (exists) {
       Swal.fire({
@@ -114,7 +171,7 @@ function Notas() {
     setTasks(newTasks);
   };
 
-  // ❌ Eliminar nota con confirmación
+  // ❌ Eliminar nota
   const deleteTask = (index) => {
     Swal.fire({
       title: "¿Seguro que deseas eliminar esta nota?",
@@ -140,52 +197,79 @@ function Notas() {
     setEditIndex(index);
   };
 
-  // 🔔 Recordatorios
-  const scheduleNotification = (task) => {
-    const now = new Date().getTime();
-    const reminderTime = new Date(task.time).getTime();
-    const delay = reminderTime - now;
+  // ⏰ Recordatorio exacto (SOLO usuario logueado y dueño de la nota)
+useEffect(() => {
+  if (!user) return;
 
-    if (delay > 0) {
-      // Notificación del navegador
-      if (Notification.permission === "granted") {
-        setTimeout(() => {
-          new Notification("🔔 Recordatorio", {
-            body: `Es hora de: ${task.text}`
-          });
-        }, delay);
-      }
+  const interval = setInterval(() => {
+    const ahora = new Date();
 
-      // SweetAlert 5 minutos antes
-      const alertTime = delay - 5 * 60 * 1000;
-      if (alertTime > 0) {
-        setTimeout(() => {
-          Swal.fire({
-            icon: "info",
-            title: "Se acerca tu nota",
-            text: `En 5 minutos debes: ${task.text}`
-          });
-        }, alertTime);
-      }
+    tasks.forEach((task) => {
+      const fechaTask = new Date(task.time);
 
-      // SweetAlert justo a la hora
-      setTimeout(() => {
+      if (
+        !task.done &&
+        fechaTask.getMinutes() === ahora.getMinutes() &&
+        fechaTask.getHours() === ahora.getHours() &&
+        fechaTask.toDateString() === ahora.toDateString()
+      ) {
+        // 🚨 Solo dispara para el usuario logueado
         Swal.fire({
-          icon: "success",
-          title: "¡Es el momento!",
-          text: `Ahora debes: ${task.text}`
+          icon: "info",
+          title: "Recordatorio",
+          text: `Es la hora de tu nota: "${task.text}"`,
+          timer: 5000,
+          showConfirmButton: false
+        });
+      }
+    });
+  }, 60000);
+
+  return () => clearInterval(interval);
+}, [tasks, user]);
+
+// 🔔 Notificación programada (SOLO usuario logueado)
+const scheduleNotification = (task) => {
+  if (!user) return; // ⚡ Se asegura que haya sesión
+
+  const now = new Date().getTime();
+  const reminderTime = new Date(task.time).getTime();
+  const delay = reminderTime - now;
+
+  if (delay > 0) {
+    if (Notification.permission === "granted") {
+      setTimeout(() => {
+        // 🚨 Notificación solo al usuario actual
+        new Notification("🔔 Recordatorio", {
+          body: `Es hora de: ${task.text}`
         });
       }, delay);
-    } else {
-      Swal.fire({
-        icon: "warning",
-        title: "Nota atrasada",
-        text: `La nota "${task.text}" estaba programada en el pasado`
-      });
     }
-  };
 
-  // 📌 Filtrar notas por día en el calendario
+    // ⏳ Aviso 5 minutos antes (solo al usuario logueado)
+    const alertTime = delay - 5 * 60 * 1000;
+    if (alertTime > 0) {
+      setTimeout(() => {
+        Swal.fire({
+          icon: "info",
+          title: "Se acerca tu nota",
+          text: `En 5 minutos debes: ${task.text}`
+        });
+      }, alertTime);
+    }
+
+    // 🚨 Aviso justo a la hora
+    setTimeout(() => {
+      Swal.fire({
+        icon: "success",
+        title: "¡Es el momento!",
+        text: `Ahora debes: ${task.text}`
+      });
+    }, delay);
+  }
+};
+
+  // 📌 Filtrar notas del día
   const filteredTasks = tasks.filter(
     (task) =>
       new Date(task.time).toDateString() === calendarDate.toDateString()
@@ -206,7 +290,7 @@ function Notas() {
       </header>
 
       <div className="notas-main">
-        {/* 📅 Panel de calendario y agendar */}
+        {/* 📅 Calendario */}
         <div className="calendar-section">
           <h2>📅 Calendario</h2>
           <Calendar value={calendarDate} onChange={setCalendarDate} />
