@@ -6,16 +6,19 @@ import "../styles/Notas.css";
 import Swal from "sweetalert2";
 
 function Notas() {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // 📌 Clave única de notas por usuario (ejemplo: tasks_usuario@gmail.com)
+  const storageKey = user ? `tasks_${user.email}` : "tasks";
+
   const [tasks, setTasks] = useState(
-    JSON.parse(localStorage.getItem("tasks")) || []
+    JSON.parse(localStorage.getItem(storageKey)) || []
   );
   const [input, setInput] = useState("");
   const [date, setDate] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user"));
 
   // 🔐 Bloqueo de acceso si no hay sesión
   useEffect(() => {
@@ -32,10 +35,12 @@ function Notas() {
     }
   }, [user, navigate]);
 
-  // 🔐 Guardar notas en localStorage cada vez que cambien
+  // 💾 Guardar notas en localStorage cada vez que cambien
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    if (user) {
+      localStorage.setItem(storageKey, JSON.stringify(tasks));
+    }
+  }, [tasks, storageKey, user]);
 
   // 🚪 Cerrar sesión con confirmación
   const handleLogout = () => {
@@ -180,7 +185,7 @@ function Notas() {
     }
   };
 
-  // Filtrar notas por día en el calendario
+  // 📌 Filtrar notas por día en el calendario
   const filteredTasks = tasks.filter(
     (task) =>
       new Date(task.time).toDateString() === calendarDate.toDateString()
