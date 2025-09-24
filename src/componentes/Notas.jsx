@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -110,6 +110,59 @@ function Notas() {
     notificationTimeouts.current = [];
   };
 
+  // 🔔 Programar notificación solo para el dueño (optimizado con useCallback)
+  const scheduleNotification = useCallback(
+    (task) => {
+      if (!user) return;
+      if (task.owner !== user.email) return; // 🔒 Solo el dueño
+
+      const now = new Date().getTime();
+      const reminderTime = new Date(task.time).getTime();
+      const delay = reminderTime - now;
+
+      if (delay > 0) {
+        if (Notification.permission === "granted") {
+          const timeoutId = setTimeout(() => {
+            if (localStorage.getItem("user")) {
+              new Notification("🔔 Recordatorio", {
+                body: `Es hora de: ${task.text}`
+              });
+            }
+          }, delay);
+          notificationTimeouts.current.push(timeoutId);
+        }
+
+        // ⏳ Aviso 5 minutos antes
+        const alertTime = delay - 5 * 60 * 1000;
+        if (alertTime > 0) {
+          const timeoutId = setTimeout(() => {
+            if (localStorage.getItem("user")) {
+              Swal.fire({
+                icon: "info",
+                title: "Se acerca tu nota",
+                text: `En 5 minutos debes: ${task.text}`
+              });
+            }
+          }, alertTime);
+          notificationTimeouts.current.push(timeoutId);
+        }
+
+        // 🚨 Aviso justo a la hora
+        const timeoutId = setTimeout(() => {
+          if (localStorage.getItem("user")) {
+            Swal.fire({
+              icon: "success",
+              title: "¡Es el momento!",
+              text: `Ahora debes: ${task.text}`
+            });
+          }
+        }, delay);
+        notificationTimeouts.current.push(timeoutId);
+      }
+    },
+    [user]
+  );
+
   // 🚪 Cerrar sesión
   const handleLogout = () => {
     Swal.fire({
@@ -164,7 +217,7 @@ function Notas() {
         ...updatedTasks[editIndex],
         text: input,
         time: date,
-        owner: user.email // 🔒 Mantener dueño
+        owner: user?.email || "desconocido"
       };
       setTasks(updatedTasks);
       setEditIndex(null);
@@ -174,7 +227,7 @@ function Notas() {
         text: input,
         done: false,
         time: date,
-        owner: user.email // 🔒 Guardar dueño
+        owner: user?.email || "desconocido"
       };
       setTasks([...tasks, newTask]);
       scheduleNotification(newTask);
@@ -218,64 +271,16 @@ function Notas() {
     setEditIndex(index);
   };
 
-  // 🔔 Programar notificación solo para el dueño
-  const scheduleNotification = (task) => {
-    if (!user) return;
-    if (task.owner !== user.email) return; // 🔒 Solo el dueño
+  // 📌 Filtrar notas del día (✅ comprobamos que user exista)
+  const filteredTasks = user
+    ? tasks.filter(
+        (task) =>
+          task.owner === user.email &&
+          new Date(task.time).toDateString() === calendarDate.toDateString()
+      )
+    : [];
 
-    const now = new Date().getTime();
-    const reminderTime = new Date(task.time).getTime();
-    const delay = reminderTime - now;
-
-    if (delay > 0) {
-      if (Notification.permission === "granted") {
-        const timeoutId = setTimeout(() => {
-          if (localStorage.getItem("user")) {
-            new Notification("🔔 Recordatorio", {
-              body: `Es hora de: ${task.text}`
-            });
-          }
-        }, delay);
-        notificationTimeouts.current.push(timeoutId);
-      }
-
-      // ⏳ Aviso 5 minutos antes
-      const alertTime = delay - 5 * 60 * 1000;
-      if (alertTime > 0) {
-        const timeoutId = setTimeout(() => {
-          if (localStorage.getItem("user")) {
-            Swal.fire({
-              icon: "info",
-              title: "Se acerca tu nota",
-              text: `En 5 minutos debes: ${task.text}`
-            });
-          }
-        }, alertTime);
-        notificationTimeouts.current.push(timeoutId);
-      }
-
-      // 🚨 Aviso justo a la hora
-      const timeoutId = setTimeout(() => {
-        if (localStorage.getItem("user")) {
-          Swal.fire({
-            icon: "success",
-            title: "¡Es el momento!",
-            text: `Ahora debes: ${task.text}`
-          });
-        }
-      }, delay);
-      notificationTimeouts.current.push(timeoutId);
-    }
-  };
-
-  // 📌 Filtrar notas del día
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task.owner === user.email && // 🔒 Solo ver las suyas
-      new Date(task.time).toDateString() === calendarDate.toDateString()
-  );
-
-  // ♻️ Reprogramar notificaciones al cambiar de usuario
+  // ♻️ Reprogramar notificaciones al cambiar de usuario o tareas
   useEffect(() => {
     clearAllNotifications();
     if (user) {
@@ -285,7 +290,7 @@ function Notas() {
         }
       });
     }
-  }, [user]);
+  }, [user, tasks, scheduleNotification]);
 
   return (
     <div className="notas-page">
@@ -293,7 +298,7 @@ function Notas() {
         <h1>Mindnote</h1>
         <div>
           <span className="welcome">
-            👋 Bienvenido, <b>{user?.nombre}</b> ({user?.rol || "usuario"})
+            👋 Bienvenido, <b>{user?.nombre || "Invitado"}</b> ({user?.rol || "usuario"})
           </span>
           <button onClick={handleLogout} className="logout-btn">
             Cerrar Sesión
