@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../styles/Admin.css";
 
+
 function Admin() {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
