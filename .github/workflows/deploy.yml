@@ -3,7 +3,7 @@ name: Deploy React app to GitHub Pages
 on:
   push:
     branches:
-      - develop   # Se ejecuta cuando haces push a la rama "develop"
+      - develop
 
 permissions:
   contents: write
@@ -13,27 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Descargar el código del repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: false  # Evita el error "No url found for submodule"
+          submodules: false  # 👈 Ignora submódulos rotos o no configurados
 
-      # 2️⃣ Configurar Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Instalar dependencias
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Construir el proyecto con Vite
       - name: Build project
         run: npm run build
 
-      # 5️⃣ Desplegar a GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
