@@ -1,8 +1,7 @@
-// src/components/Navbar.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
-
+import logo from "../assets/logo.png"; // 👈 Importa correctamente la imagen
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +12,8 @@ function Navbar() {
         {/* Logo */}
         <div className="logo">
           <Link to="/">
-            <img src="/src/assets/logo.png" alt="Logo" />
+            {/* 👇 Usa la variable importada, no una ruta relativa */}
+            <img src={logo} alt="Logo" />
           </Link>
         </div>
 
