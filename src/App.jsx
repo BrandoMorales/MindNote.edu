@@ -8,6 +8,7 @@ import Notas from "./componentes/Notas";
 import Footer from "./componentes/Footer";
 import AccessibilityPanel from "./componentes/AccessibilityPanel";
 import Admin from "./componentes/Admin";
+
 function App() {
   return (
     // 👇 Esto es lo importante
