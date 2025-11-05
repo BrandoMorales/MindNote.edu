@@ -14,11 +14,11 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/notas" element={<Notas />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/#/" element={<Home />} />
+        <Route path="/#login/" element={<Login />} />
+        <Route path="/#notas/" element={<Notas />} />
+        <Route path="/#register/" element={<Register />} />
+        <Route path="/#admin/" element={<Admin />} />
       </Routes>
       <Footer />
       <AccessibilityPanel />
