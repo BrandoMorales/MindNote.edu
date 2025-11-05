@@ -8,6 +8,7 @@ import Notas from "./componentes/Notas";
 import Footer from "./componentes/Footer";
 import AccessibilityPanel from "./componentes/AccessibilityPanel";
 import Admin from "./componentes/Admin";
+import ForgotPassword from "./componentes/ForgotPasword";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/notas" element={<Notas />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
       <Footer />
       <AccessibilityPanel />

@@ -134,7 +134,7 @@ const Login = () => {
       {locked && (
         <p className="lock-msg">
           🚫 Has excedido los intentos. Intenta de nuevo en{" "}
-          <b>{Math.ceil(timeLeft / 60)} min {timeLeft % 60} seg</b>.
+          <b>{Math.floor(timeLeft / 60)} min {timeLeft % 60} seg</b>.
         </p>
       )}
       <form onSubmit={handleSubmit}>
@@ -158,6 +158,13 @@ const Login = () => {
           Entrar
         </button>
       </form>
+
+      {/* 🔗 Enlace de recuperación de contraseña */}
+      <p className="forgot-password">
+        ¿Olvidaste tu contraseña?{" "}
+        <Link to="/forgot-password">Recupérala aquí</Link>
+      </p>
+
       <p>
         ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
       </p>
@@ -166,4 +173,3 @@ const Login = () => {
 };
 
 export default Login;
-
