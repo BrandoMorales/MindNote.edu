@@ -1,11 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
+// Configuración para GitHub Pages
 export default defineConfig({
   plugins: [react()],
-  base: '/MindNote.edu/', // 👈 nombre exacto del repo
-  build: {
-    outDir: 'dist'
-  }
+  base: '/MindNote.edu/', // 👈 nombre exacto del repositorio
 })
