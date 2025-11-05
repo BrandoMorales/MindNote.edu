@@ -56,9 +56,7 @@ const ForgotPassword = () => {
     );
 
     // Enlace al reset
-    const resetLink = `https://BrandoMorales.github.io/MindNote.edu/forgot-password?email=${encodeURIComponent(
-      email
-    )}&token=${token}`;
+    const resetLink = `https://brandomorales.github.io/MindNote.edu/forgot-password?email=${encodeURIComponent(email)}&token=${token}`;
 
     // ⚙️ Parámetros que usará tu plantilla en EmailJS
     const templateParams = {

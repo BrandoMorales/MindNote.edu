@@ -8,7 +8,7 @@ import Notas from "./componentes/Notas";
 import Footer from "./componentes/Footer";
 import AccessibilityPanel from "./componentes/AccessibilityPanel";
 import Admin from "./componentes/Admin";
-import ForgotPassword from "./componentes/ForgotPasword";
+import ForgotPassword from "./componentes/ForgotPassword";
 
 function App() {
   return (
