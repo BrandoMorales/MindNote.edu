@@ -3,7 +3,7 @@ name: Deploy React app to GitHub Pages
 on:
   push:
     branches:
-      - develop
+      - develop  # Despliega cada vez que hagas push a 'develop'
 
 permissions:
   contents: write
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: false  # 👈 Ignora submódulos rotos o no configurados
+          submodules: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
