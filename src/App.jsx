@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./componentes/Navbar";
 import Home from "./componentes/Home";
 import Login from "./componentes/Login";
@@ -11,8 +11,7 @@ import Admin from "./componentes/Admin";
 
 function App() {
   return (
-    // 👇 Esto es lo importante
-    <Router basename="/MindNote.edu">
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -22,9 +21,8 @@ function App() {
         <Route path="/admin" element={<Admin />} />
       </Routes>
       <Footer />
-      {/* 🔥 Panel de accesibilidad GLOBAL */}
       <AccessibilityPanel />
-    </Router>
+    </>
   );
 }
 
