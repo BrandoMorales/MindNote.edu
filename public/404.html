@@ -1,17 +1,6 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirigiendo...</title>
-    <script>
-      // 🔁 Redirigir conservando ruta y parámetros
-      const repo = "/MindNote.edu";
-      const redirect = `${repo}${window.location.pathname.replace(repo, "")}${window.location.search}${window.location.hash}`;
-      window.location.replace(redirect);
-    </script>
+    <meta http-equiv="refresh" content="0; url=/MindNote.edu/" />
   </head>
-  <body>
-    <p>Redirigiendo a MindNote.edu...</p>
-  </body>
 </html>
