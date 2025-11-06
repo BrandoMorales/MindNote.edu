@@ -70,7 +70,7 @@ const ForgotPassword = () => {
         "MindNote.edu", // ✅ Service ID
         "MindNote.edu2", // ✅ Template ID
         templateParams,
-        "URWPWZMh6HXD6s8sJ" // ✅ Public Key
+        "6vIfd7D5Dltyqq_MO" // ✅ Public Key
       );
 
       Swal.fire(
