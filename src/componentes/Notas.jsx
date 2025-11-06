@@ -4,10 +4,31 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Notas.css";
 import Swal from "sweetalert2";
+import emailjs from "emailjs-com"; // 📧 Importar EmailJS
 
 function Notas() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+
+  // 📧 Configuración de EmailJS
+  const SERVICE_ID = "MindNote.edu";
+  const TEMPLATE_ID = "MindNote.edu3";
+  const PUBLIC_KEY = "URWPWZMh6HXD6s8sJ";
+
+  // 📧 Función para enviar correos
+  const sendEmail = (to_name, to_email, subject, message) => {
+    const params = {
+      to_name,
+      to_email,
+      subject,
+      message,
+    };
+
+    emailjs
+      .send(SERVICE_ID, TEMPLATE_ID, params, PUBLIC_KEY)
+      .then(() => console.log("📧 Email enviado a", to_email))
+      .catch((err) => console.error("❌ Error enviando email:", err));
+  };
 
   // 📌 Clave única de notas por usuario
   const storageKey = user ? `tasks_${user.email}` : "tasks";
@@ -63,6 +84,14 @@ function Notas() {
             timer: 4000,
             showConfirmButton: false
           });
+
+          // 📧 Enviar correo por nota atrasada
+          sendEmail(
+            user.nombre || "Usuario",
+            user.email,
+            "⚠ Nota atrasada",
+            `Hola ${user.nombre || "usuario"},\n\nTu nota "${task.text}" estaba programada para ${fechaTask.toLocaleString()} y aún no se ha cumplido.`
+          );
         }
       });
     };
@@ -97,6 +126,14 @@ function Notas() {
             timer: 5000,
             showConfirmButton: false
           });
+
+          // 📧 Enviar correo al cumplirse la nota
+          sendEmail(
+            user.nombre || "Usuario",
+            user.email,
+            "✅ Es hora de tu nota",
+            `Hola ${user.nombre || "usuario"},\n\nEs el momento de realizar tu nota: "${task.text}".`
+          );
         }
       });
     }, 60000);
@@ -142,6 +179,14 @@ function Notas() {
                 title: "Se acerca tu nota",
                 text: `En 5 minutos debes: ${task.text}`
               });
+
+              // 📧 Enviar correo 5 minutos antes
+              sendEmail(
+                user.nombre || "Usuario",
+                user.email,
+                "⏰ Se acerca tu nota",
+                `Hola ${user.nombre || "usuario"},\n\nEn 5 minutos debes realizar: "${task.text}".`
+              );
             }
           }, alertTime);
           notificationTimeouts.current.push(timeoutId);
@@ -155,6 +200,14 @@ function Notas() {
               title: "¡Es el momento!",
               text: `Ahora debes: ${task.text}`
             });
+
+            // 📧 Enviar correo justo a la hora
+            sendEmail(
+              user.nombre || "Usuario",
+              user.email,
+              "✅ Es hora de tu nota",
+              `Hola ${user.nombre || "usuario"},\n\nAhora debes realizar: "${task.text}".`
+            );
           }
         }, delay);
         notificationTimeouts.current.push(timeoutId);
@@ -271,7 +324,7 @@ function Notas() {
     setEditIndex(index);
   };
 
-  // 📌 Filtrar notas del día (✅ comprobamos que user exista)
+  // 📌 Filtrar notas del día
   const filteredTasks = user
     ? tasks.filter(
         (task) =>
@@ -377,4 +430,3 @@ function Notas() {
 }
 
 export default Notas;
-
