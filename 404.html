@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirigiendo...</title>
     <script>
-      // Redirección confiable para GitHub Pages (funciona en iPhone también)
+      // 🔁 Redirigir conservando ruta y parámetros
       const repo = "/MindNote.edu";
-      const redirect = `${repo}/`;
+      const redirect = `${repo}${window.location.pathname.replace(repo, "")}${window.location.search}${window.location.hash}`;
       window.location.replace(redirect);
     </script>
   </head>
