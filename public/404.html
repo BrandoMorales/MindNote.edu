@@ -1,6 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
-    <meta http-equiv="refresh" content="0; url=/MindNote.edu/" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirigiendo...</title>
+    <script>
+      // ✅ Solo redirige si NO estamos ya dentro de la app React
+      const repo = "/MindNote.edu";
+      const currentPath = window.location.pathname;
+
+      if (!currentPath.startsWith(repo + "/index.html")) {
+        const newUrl = repo + "/index.html#" + currentPath.replace(repo, "") + window.location.search + window.location.hash;
+        window.location.replace(newUrl);
+      }
+    </script>
   </head>
+  <body>
+    <p>Redirigiendo a MindNote.edu...</p>
+  </body>
 </html>

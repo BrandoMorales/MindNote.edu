@@ -55,13 +55,15 @@ const ForgotPassword = () => {
       JSON.stringify({ email, token, expiry })
     );
 
-    // Enlace al reset
-    const resetLink = `https://brandomorales.github.io/MindNote.edu/forgot-password?email=${encodeURIComponent(email)}&token=${token}`;
+    // ✅ Enlace para GitHub Pages (usando HashRouter)
+    const resetLink = `https://brandomorales.github.io/MindNote.edu/#/forgot-password?email=${encodeURIComponent(
+      email
+    )}&token=${token}`;
 
     // ⚙️ Parámetros que usará tu plantilla en EmailJS
     const templateParams = {
-      to_name: user.nombre || "usuario",
-      to_email: email, // 👈 Este debe coincidir con {{to_email}} en tu plantilla
+      to_name: user.nombre || "Usuario",
+      to_email: email,
       reset_link: resetLink,
     };
 
@@ -105,9 +107,11 @@ const ForgotPassword = () => {
       localStorage.setItem("registeredUsers", JSON.stringify(users));
       localStorage.removeItem("passwordResetToken");
 
-      Swal.fire("Éxito 🎉", "Tu contraseña fue cambiada correctamente.", "success").then(
-        () => navigate("/login")
-      );
+      Swal.fire(
+        "Éxito 🎉",
+        "Tu contraseña fue cambiada correctamente.",
+        "success"
+      ).then(() => navigate("/login"));
     }
   };
 
