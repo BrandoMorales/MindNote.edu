@@ -9,6 +9,7 @@ Permite a cada usuario crear, editar y eliminar notas asociadas a fechas especí
 
 ---
 
+
 ## ✨ Funcionalidades principales
 
 - 🔑 **Autenticación local** (registro e inicio de sesión guardados en `localStorage`).
