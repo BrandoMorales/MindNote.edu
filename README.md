@@ -3,6 +3,7 @@
 Aplicación web de **notas inteligentes con recordatorios** creada con **React + Vite**.  
 Permite a cada usuario crear, editar y eliminar notas asociadas a fechas específicas, con recordatorios automáticos (notificaciones del navegador y alertas visuales).  
 
+
 👉 Cada nota está vinculada al usuario que la creó, así que **solo la cuenta dueña recibe notificaciones de sus notas**.
 
 
