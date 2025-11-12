@@ -7,6 +7,7 @@ Permite a cada usuario crear, editar y eliminar notas asociadas a fechas especí
 👉 Cada nota está vinculada al usuario que la creó, así que **solo la cuenta dueña recibe notificaciones de sus notas**.
 
 
+
 ---
 
 
