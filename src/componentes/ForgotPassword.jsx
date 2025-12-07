@@ -18,100 +18,95 @@ const ForgotPassword = () => {
     const token = params.get("token");
 
     if (emailParam && token) {
-      const stored = JSON.parse(localStorage.getItem("passwordResetToken"));
-      if (
-        stored &&
-        stored.email === emailParam &&
-        stored.token === token &&
-        stored.expiry > Date.now()
-      ) {
-        setEmail(emailParam);
-        setTokenValid(true);
-      }
+      setEmail(emailParam);
+      setTokenValid(true);
     }
   }, [location]);
 
-  // 📤 Enviar correo de recuperación
+  // 📤 Enviar correo con token desde el backend
   const handleSendLink = async () => {
-    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-    const user = users.find((u) => u.email === email.trim());
-
     if (!email.trim()) {
       Swal.fire("Error", "Por favor ingresa tu correo.", "error");
       return;
     }
 
-    if (!user) {
-      Swal.fire("Error", "Este correo no está registrado.", "error");
-      return;
-    }
-
-    // Generar token único (válido por 10 minutos)
-    const token = Math.random().toString(36).substring(2, 15);
-    const expiry = Date.now() + 10 * 60 * 1000;
-
-    localStorage.setItem(
-      "passwordResetToken",
-      JSON.stringify({ email, token, expiry })
-    );
-
-    // ✅ Enlace para GitHub Pages (usando HashRouter)
-    const resetLink = `https://brandomorales.github.io/MindNote.edu/#/forgot-password?email=${encodeURIComponent(
-      email
-    )}&token=${token}`;
-
-    // ⚙️ Parámetros que usará tu plantilla en EmailJS
-    const templateParams = {
-      to_name: user.nombre || "Usuario",
-      to_email: email,
-      reset_link: resetLink,
-    };
-
     try {
+      const res = await fetch("http://localhost:4000/api/auth/forgot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        Swal.fire("Error", data.msg, "error");
+        return;
+      }
+
+      const token = data.token;
+
+      // Enlace para GitHub Pages usando HashRouter
+      const resetLink = `https://brandomorales.github.io/MindNote.edu/#/forgot-password?email=${encodeURIComponent(
+        email
+      )}&token=${token}`;
+
+      // EmailJS (NO SE CAMBIÓ NADA)
+      const templateParams = {
+        to_name: "Usuario",
+        to_email: email,
+        reset_link: resetLink,
+      };
+
       await emailjs.send(
-        "MindNote.edu", // ✅ Service ID
-        "MindNote.edu2", // ✅ Template ID
+        "MindNote.edu",
+        "MindNote.edu2",
         templateParams,
-        "6vIfd7D5Dltyqq_MO" // ✅ Public Key
+        "6vIfd7D5Dltyqq_MO"
       );
 
       Swal.fire(
         "Correo enviado ✅",
-        "Te hemos enviado un enlace de recuperación. Revisa tu bandeja o carpeta de spam.",
+        "Te hemos enviado un enlace de recuperación.",
         "success"
       );
     } catch (error) {
-      console.error("Error al enviar correo:", error);
-      Swal.fire(
-        "Error",
-        "No se pudo enviar el correo: " + (error.text || error.message),
-        "error"
-      );
+      console.error(error);
+      Swal.fire("Error", "No se pudo enviar el enlace.", "error");
     }
   };
 
-  // 🔑 Cambiar contraseña desde el enlace
-  const handleChangePassword = () => {
-    const stored = JSON.parse(localStorage.getItem("passwordResetToken"));
+  // 🔑 Cambiar contraseña usando el backend
+  const handleChangePassword = async () => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
 
-    if (!stored || stored.email !== email || stored.expiry < Date.now()) {
-      Swal.fire("Error", "El enlace ha expirado o no es válido.", "error");
+    if (!newPassword.trim()) {
+      Swal.fire("Error", "Debes ingresar una nueva contraseña.", "error");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-    const index = users.findIndex((u) => u.email === email);
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token, newPassword }),
+      });
 
-    if (index !== -1) {
-      users[index].password = newPassword;
-      localStorage.setItem("registeredUsers", JSON.stringify(users));
-      localStorage.removeItem("passwordResetToken");
+      const data = await res.json();
+
+      if (!res.ok) {
+        Swal.fire("Error", data.msg, "error");
+        return;
+      }
 
       Swal.fire(
         "Éxito 🎉",
-        "Tu contraseña fue cambiada correctamente.",
+        "Tu contraseña ha sido actualizada correctamente.",
         "success"
       ).then(() => navigate("/login"));
+    } catch (error) {
+      Swal.fire("Error", "No se pudo cambiar la contraseña.", "error");
     }
   };
 

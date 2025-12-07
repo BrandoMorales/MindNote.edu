@@ -19,7 +19,7 @@ function Register() {
       Swal.fire({
         icon: "info",
         title: "Ya tienes sesión activa",
-        text: "Si quieres registrarte otra vez cierra sesión primero.",
+        text: "Si quieres registrarte otra vez, cierra sesión primero.",
       }).then(() => {
         if (user.rol === "administrador") {
           navigate("/admin");
@@ -30,7 +30,7 @@ function Register() {
     }
   }, [navigate]);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     if (!nombre.trim() || !email.trim() || !password.trim()) {
@@ -43,36 +43,45 @@ function Register() {
       return;
     }
 
+    // ✔ Validación correcta de administrador
     if (rol === "administrador" && claveAdmin !== "MindNote.edu") {
       Swal.fire("Error", "La clave especial de administrador es incorrecta.", "error");
       return;
     }
 
-    const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          email,
+          password,
+          rol,
+          claveAdmin: rol === "administrador" ? claveAdmin : null,
+        }),
+      });
 
-    if (registeredUsers.some((u) => u.email === email)) {
-      Swal.fire("Error", "Este correo ya está registrado.", "error");
-      return;
-    }
+      const data = await res.json();
 
-    const newUser = {
-      nombre: nombre.trim(),
-      email: email.trim(),
-      password: password.trim(),
-      rol,
-    };
-
-    registeredUsers.push(newUser);
-    localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
-    localStorage.setItem("user", JSON.stringify(newUser));
-
-    Swal.fire("Registro exitoso", `Bienvenido ${nombre}`, "success").then(() => {
-      if (rol === "administrador") {
-        navigate("/admin");
-      } else {
-        navigate("/notas");
+      if (!res.ok) {
+        Swal.fire("Error", data.msg, "error");
+        return;
       }
-    });
+
+      Swal.fire("Registro exitoso", `Bienvenido ${nombre}`, "success").then(() => {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+
+        if (rol === "administrador") {
+          navigate("/admin");
+        } else {
+          navigate("/notas");
+        }
+      });
+    } catch (err) {
+      Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+    }
   };
 
   const openTerminos = (e) => {
@@ -80,14 +89,10 @@ function Register() {
     Swal.fire({
       title: "Términos y Condiciones de MindNote",
       html: `
-        <p><strong>1. Aceptación de los Términos:</strong> Al registrarte y utilizar MindNote, aceptas cumplir con estos términos y condiciones en su totalidad.</p>
-        <p><strong>2. Uso Personal:</strong> Esta aplicación está destinada únicamente para uso personal y educativo. No se permite el uso con fines comerciales sin autorización previa.</p>
-        <p><strong>3. Privacidad:</strong> La información que nos proporcionas (nombre, correo, etc.) se almacena localmente en tu navegador y no se comparte con terceros.</p>
-        <p><strong>4. Seguridad de la Cuenta:</strong> Eres responsable de mantener la confidencialidad de tus credenciales. No compartas tu contraseña.</p>
-        <p><strong>5. Rol de Administrador:</strong> El acceso como administrador requiere una clave especial. Este rol tiene permisos adicionales, como visualizar y gestionar usuarios.</p>
-        <p><strong>6. Propiedad Intelectual:</strong> Todo el contenido de MindNote, incluyendo textos, diseños e interfaz, es propiedad del desarrollador y no puede ser copiado sin permiso.</p>
-        <p><strong>7. Cambios:</strong> Estos términos pueden ser modificados en cualquier momento. Se notificará a los usuarios registrados si hay cambios relevantes.</p>
-        <p><strong>8. Contacto:</strong> Si tienes dudas o comentarios, puedes escribirnos a <a href="mailto:soporte@mindnote.com">soporte@mindnote.com</a>.</p>
+        <p><strong>1. Aceptación:</strong> Al utilizar MindNote aceptas estos términos.</p>
+        <p><strong>2. Privacidad:</strong> Tu información se almacena de forma segura.</p>
+        <p><strong>3. Seguridad:</strong> Mantén tu contraseña privada.</p>
+        <p><strong>4. Administrador:</strong> Requiere la clave especial correcta.</p>
       `,
       width: 600,
       confirmButtonText: "Cerrar",
@@ -168,11 +173,8 @@ function Register() {
               placeholder="Clave especial"
               value={claveAdmin}
               onChange={(e) => setClaveAdmin(e.target.value)}
-              required={rol === "administrador"}
+              required
             />
-            <small className="hint">
-              Introduce la clave especial para registrar administradores.
-            </small>
           </label>
         )}
 
@@ -203,4 +205,3 @@ function Register() {
 }
 
 export default Register;
-

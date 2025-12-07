@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../styles/Admin.css";
 
-
 function Admin() {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
 
+  // Cargar usuarios y validar admin
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -17,33 +17,64 @@ function Admin() {
       return;
     }
 
-    const registrados = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-    setUsuarios(registrados);
+    obtenerUsuarios();
   }, [navigate]);
 
-  const eliminarUsuario = (email) => {
+  // Obtener usuarios desde el backend
+  const obtenerUsuarios = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:4000/api/auth/usuarios", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setUsuarios(data); // ⬅ tu backend devuelve directamente el array
+      } else {
+        Swal.fire("Error", data.msg, "error");
+      }
+    } catch (error) {
+      Swal.fire("Error", "No se pudo cargar la lista de usuarios.", "error");
+    }
+  };
+
+  // Eliminar usuario
+  const eliminarUsuario = (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
-      text: `Vas a eliminar al usuario con correo: ${email}`,
+      text: "Esto eliminará al usuario definitivamente.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const nuevosUsuarios = usuarios.filter((u) => u.email !== email);
-        localStorage.setItem("registeredUsers", JSON.stringify(nuevosUsuarios));
+        try {
+          const token = localStorage.getItem("token");
 
-        const currentUser = JSON.parse(localStorage.getItem("user"));
-        if (currentUser && currentUser.email === email) {
-          localStorage.removeItem("user");
-          Swal.fire("Usuario eliminado", "Tu sesión ha sido cerrada.", "info");
-          navigate("/login");
-          return;
+          const res = await fetch(`http://localhost:4000/api/auth/usuarios/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            Swal.fire("Eliminado", "El usuario ha sido eliminado.", "success");
+            obtenerUsuarios(); // actualizar lista
+          } else {
+            Swal.fire("Error", data.msg, "error");
+          }
+        } catch (error) {
+          Swal.fire("Error", "No se pudo eliminar el usuario.", "error");
         }
-
-        setUsuarios(nuevosUsuarios);
-        Swal.fire("Eliminado", "El usuario ha sido eliminado correctamente.", "success");
       }
     });
   };
@@ -57,6 +88,7 @@ function Admin() {
         <table className="usuarios-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nombre</th>
               <th>Correo</th>
               <th>Rol</th>
@@ -65,16 +97,14 @@ function Admin() {
           </thead>
           <tbody>
             {usuarios.length > 0 ? (
-              usuarios.map((u, index) => (
-                <tr key={index}>
+              usuarios.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
                   <td>{u.nombre}</td>
                   <td>{u.email}</td>
                   <td>{u.rol}</td>
                   <td>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => eliminarUsuario(u.email)}
-                    >
+                    <button className="btn-eliminar" onClick={() => eliminarUsuario(u.id)}>
                       Eliminar
                     </button>
                   </td>
@@ -82,7 +112,7 @@ function Admin() {
               ))
             ) : (
               <tr>
-                <td colSpan="4">No hay usuarios registrados</td>
+                <td colSpan="5">No hay usuarios registrados</td>
               </tr>
             )}
           </tbody>
@@ -93,4 +123,3 @@ function Admin() {
 }
 
 export default Admin;
-
